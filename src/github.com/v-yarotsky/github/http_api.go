@@ -1,4 +1,4 @@
-package main
+package github
 
 import (
 	"fmt"
@@ -8,24 +8,26 @@ import (
 	"strings"
 )
 
-type GithubHttpClient struct {
+const GITHUB_API_ROOT = "https://api.github.com"
+
+type HttpApi struct {
 	accessToken string
 }
 
-func (c *GithubHttpClient) Get(requestPath string) (*GithubResponse, error) {
-	return c.request("GET", requestPath)
+type Response struct {
+	Body   []byte
+	Paging *PaginationInfo
 }
 
 type PaginationInfo struct {
 	NextPagePath string
 }
 
-type GithubResponse struct {
-	Body   []byte
-	Paging *PaginationInfo
+func (c *HttpApi) Get(requestPath string) (*Response, error) {
+	return c.request("GET", requestPath)
 }
 
-func (c *GithubHttpClient) request(requestType string, requestPath string) (*GithubResponse, error) {
+func (c *HttpApi) request(requestType string, requestPath string) (*Response, error) {
 	req, err := http.NewRequest(requestType, c.fullUrl(requestPath), nil)
 
 	if err != nil {
@@ -56,16 +58,14 @@ func (c *GithubHttpClient) request(requestType string, requestPath string) (*Git
 	paging := new(PaginationInfo)
 	c.populatePaging(resp, paging)
 
-	return &GithubResponse{Body: body, Paging: paging}, nil
+	return &Response{Body: body, Paging: paging}, nil
 }
 
-const GITHUB_API_ROOT = "https://api.github.com"
-
-func (c *GithubHttpClient) fullUrl(path string) string {
+func (c *HttpApi) fullUrl(path string) string {
 	return GITHUB_API_ROOT + path
 }
 
-func (c *GithubHttpClient) populatePaging(response *http.Response, paging *PaginationInfo) {
+func (c *HttpApi) populatePaging(response *http.Response, paging *PaginationInfo) {
 	if links, ok := response.Header["Link"]; ok && len(links) > 0 {
 		for _, link := range strings.Split(links[0], ", ") {
 			r := regexp.MustCompile(`^<(?P<link>.*?)>; rel="(?P<rel>.*?)"$`)
