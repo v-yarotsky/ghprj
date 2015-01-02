@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	c, _ := github.NewClient()
+	c, _ := github.NewCachingClient()
 	repos, err := c.UserAndOrgRepos()
 
 	if err != nil {
