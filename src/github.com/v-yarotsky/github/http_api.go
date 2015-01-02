@@ -1,7 +1,7 @@
 package github
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -48,7 +48,10 @@ func (c *HttpApi) request(requestType string, requestPath string) (*Response, er
 
 	defer resp.Body.Close()
 
-	fmt.Println("request", requestPath, "response status code", resp.Status)
+	if resp.StatusCode != 200 {
+		return nil, errors.New(resp.Status)
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
