@@ -1,12 +1,51 @@
 package fuzz
 
 import (
+	"../github"
 	"errors"
 	"math"
+	"sort"
 	"strings"
 )
 
-func Score(choice, query string) float64 {
+func FilterRepos(repos []github.Repo, query string) []github.Repo {
+	scoredRepos := NewScoredRepos(repos, query)
+	sort.Sort(sort.Reverse(scoredRepos))
+	var filtered []github.Repo
+
+	for i, r := range scoredRepos.Repos {
+		if scoredRepos.Scores[i] > 0.0 {
+			filtered = append(filtered, r)
+		}
+	}
+
+	return filtered
+}
+
+type ScoredRepos struct {
+	Repos  []github.Repo
+	Scores []float64
+	Query  string
+}
+
+func NewScoredRepos(repos []github.Repo, query string) ScoredRepos {
+	scores := make([]float64, len(repos))
+
+	for i, r := range repos {
+		scores[i] = score(r.Name, query)
+	}
+
+	return ScoredRepos{Repos: repos, Scores: scores, Query: query}
+}
+
+func (a ScoredRepos) Len() int           { return len(a.Repos) }
+func (a ScoredRepos) Less(i, j int) bool { return a.Scores[i] < a.Scores[j] }
+func (a ScoredRepos) Swap(i, j int) {
+	a.Repos[i], a.Repos[j] = a.Repos[j], a.Repos[i]
+	a.Scores[i], a.Scores[j] = a.Scores[j], a.Scores[i]
+}
+
+func score(choice, query string) float64 {
 	if len(query) == 0 {
 		return 1.0
 	}
@@ -24,9 +63,8 @@ func Score(choice, query string) float64 {
 		return 0.0
 	}
 
-	score := float64(len(query)) / float64(matchLength) // Penalize longer matches.
-	return score / float64(len(choice))                 // Normalize vs. the length of the choice, panalizing longer strings.
-	return 0.0
+	stringScore := float64(len(query)) / float64(matchLength) // Penalize longer matches.
+	return stringScore / float64(len(choice))                 // Normalize vs. the length of the choice, panalizing longer strings.
 }
 
 func computeMatchLength(str, chars string) (int, error) {
