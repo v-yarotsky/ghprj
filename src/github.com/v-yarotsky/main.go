@@ -9,20 +9,32 @@ import (
 	"./formatter"
 	"./fuzz"
 	"./github"
+	"flag"
 	"log"
 	"os"
 )
 
 func main() {
+	expirePtr := flag.Bool("expire", false, "Expire caches")
+	flag.Parse()
+
 	c, _ := github.NewCachingClient()
+
+	if *expirePtr {
+		err := c.Expire()
+		if err != nil {
+			log.Printf("Failed to expire cache: %s", err)
+		}
+	}
+
 	repos, err := c.UserAndOrgRepos()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if len(os.Args) > 1 {
-		repos = fuzz.FilterRepos(repos, os.Args[1])
+	if len(flag.Args()) > 0 {
+		repos = fuzz.FilterRepos(repos, flag.Arg(0))
 	}
 
 	results, err := (&formatter.Alfred{}).FormattedResults(repos)

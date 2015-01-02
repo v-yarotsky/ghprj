@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 type CachingClient struct {
@@ -12,12 +13,16 @@ type CachingClient struct {
 }
 
 func NewCachingClient() (*CachingClient, error) {
+	cacheDir := os.Getenv("HOME") + "/.gh-prj/caches"
+
 	return &CachingClient{
-		"/tmp",
-		&Client{
-			&HttpApi{AccessToken()},
-		},
+		CacheDir: cacheDir,
+		Client:   &Client{&HttpApi{AccessToken()}},
 	}, nil
+}
+
+func (c *CachingClient) Expire() error {
+	return os.RemoveAll(c.CacheDir)
 }
 
 func (c *CachingClient) UserAndOrgRepos() ([]Repo, error) {
@@ -109,6 +114,12 @@ func (c *CachingClient) readCache(key string, obj interface{}) error {
 }
 
 func (c *CachingClient) writeCache(key string, obj interface{}) error {
+	err := os.MkdirAll(c.CacheDir, 0700)
+
+	if err != nil {
+		return err
+	}
+
 	data, err := json.Marshal(obj)
 
 	if err != nil {
