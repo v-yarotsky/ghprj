@@ -39,72 +39,31 @@ func (c *CachingClient) UserAndOrgRepos() ([]Repo, error) {
 	return *r.(*[]Repo), nil
 }
 
-func (c *CachingClient) Repos() ([]Repo, error) {
-	result := []Repo{}
-
-	r, err := c.fetchCache("repos", &result, func() (interface{}, error) {
-		return c.Client.Repos()
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return *r.(*[]Repo), nil
-}
-
-func (c *CachingClient) OrgRepos(orgLogin string) ([]Repo, error) {
-	result := []Repo{}
-
-	r, err := c.fetchCache("org_repos_"+orgLogin, &result, func() (interface{}, error) {
-		return c.Client.OrgRepos(orgLogin)
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return *r.(*[]Repo), nil
-}
-
-func (c *CachingClient) Orgs() ([]Org, error) {
-	result := []Org{}
-	r, err := c.fetchCache("orgs", &result, func() (interface{}, error) {
-		return c.Client.Orgs()
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return *r.(*[]Org), nil
-}
-
-func (c *CachingClient) fetchCache(key string, obj interface{}, fetchFn func() (interface{}, error)) (interface{}, error) {
-	err := c.readCache(key, &obj)
+func (c *CachingClient) fetchCache(key string, objPtr interface{}, fetchFn func() (interface{}, error)) (interface{}, error) {
+	err := c.readCache(key, objPtr)
 	if err != nil {
 		log.Printf("Cache miss: %s, or error reading cache", key)
-		obj, err := fetchFn()
+		objPtr, err = fetchFn()
 		if err != nil {
 			log.Fatalf("Failed to fetch %s: %s", key, err)
 		}
-		err = c.writeCache(key, &obj)
+		err = c.writeCache(key, objPtr)
 
 		if err != nil {
 			log.Printf("Failed to write cache %s: %s", key, err)
 		}
 	}
-	return obj, nil
+	return objPtr, nil
 }
 
-func (c *CachingClient) readCache(key string, obj interface{}) error {
+func (c *CachingClient) readCache(key string, objPtr interface{}) error {
 	data, err := ioutil.ReadFile(c.expandKey(key))
 
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, obj)
+	err = json.Unmarshal(data, objPtr)
 
 	if err != nil {
 		return err
@@ -113,14 +72,14 @@ func (c *CachingClient) readCache(key string, obj interface{}) error {
 	return nil
 }
 
-func (c *CachingClient) writeCache(key string, obj interface{}) error {
+func (c *CachingClient) writeCache(key string, objPtr interface{}) error {
 	err := os.MkdirAll(c.CacheDir, 0700)
 
 	if err != nil {
 		return err
 	}
 
-	data, err := json.Marshal(obj)
+	data, err := json.Marshal(objPtr)
 
 	if err != nil {
 		return err

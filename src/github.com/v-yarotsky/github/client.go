@@ -23,14 +23,14 @@ func NewClient() (*Client, error) {
 	}, nil
 }
 
-func (c *Client) UserAndOrgRepos() ([]Repo, error) {
-	orgs, err := c.Orgs()
+func (c *Client) UserAndOrgRepos() (*[]Repo, error) {
+	orgs, err := c.orgs()
 
 	if err != nil {
 		return nil, err
 	}
 
-	ownRepos, err := c.Repos()
+	ownRepos, err := c.repos()
 
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *Client) UserAndOrgRepos() ([]Repo, error) {
 
 	for _, org := range orgs {
 		go func(org Org) {
-			orgRepos, err := c.OrgRepos(org.Login)
+			orgRepos, err := c.orgRepos(org.Login)
 			if err != nil {
 				orgReposErrChan <- err
 				return
@@ -66,14 +66,14 @@ func (c *Client) UserAndOrgRepos() ([]Repo, error) {
 		}
 	}
 
-	return repos, nil
+	return &repos, nil
 }
 
-func (c *Client) Repos() ([]Repo, error) {
+func (c *Client) repos() ([]Repo, error) {
 	return c.paginatedRepos("/user/repos?per_page=100")
 }
 
-func (c *Client) OrgRepos(orgLogin string) ([]Repo, error) {
+func (c *Client) orgRepos(orgLogin string) ([]Repo, error) {
 	return c.paginatedRepos("/orgs/" + orgLogin + "/repos?per_page=100")
 }
 
@@ -102,7 +102,7 @@ func (c *Client) paginatedRepos(initialPath string) ([]Repo, error) {
 	return result, nil
 }
 
-func (c *Client) Orgs() ([]Org, error) {
+func (c *Client) orgs() ([]Org, error) {
 	resp, err := c.api.Get("/user/orgs")
 
 	if err != nil {
