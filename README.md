@@ -7,7 +7,7 @@ The thing is currently WIP,  I'm learning myself some golang, so it's going to b
 
 ## Summary
 
-There's a command-line app `gh` and an [Alred Extension](https://github.com/v-yarotsky/gh-prj/blob/master/assets/Github%20Prj.alfredworkflow?raw=true).
+There's a command-line app `gh` and an [Alfred Extension](https://github.com/v-yarotsky/gh-prj/blob/master/assets/Github%20Prj.alfredworkflow?raw=true).
 This alfred extension helps you open github repos in your web browser with a few keystrokes.
 
 [Download latest](https://github.com/v-yarotsky/gh-prj/blob/master/assets/Github%20Prj.alfredworkflow?raw=true)
