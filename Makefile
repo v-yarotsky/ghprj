@@ -3,6 +3,7 @@ PREFIX=/usr/local
 all: bin/gh install
 
 bin/gh:
+	mkdir -p bin
 	go build -o bin/gh src/github.com/v-yarotsky/main.go
 install: bin/gh
 	cp -f bin/gh $(PREFIX)/bin/gh
