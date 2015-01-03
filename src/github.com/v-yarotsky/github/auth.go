@@ -9,20 +9,25 @@ import (
 type usernamePasswordCallback func() (string, string, error)
 
 type Authenticator struct {
-	StoreFile              string
+	StoreDir               string
 	GetUsernameAndPassword usernamePasswordCallback
 }
 
 func NewAuthenticator(cb usernamePasswordCallback) *Authenticator {
-	storeFile := os.Getenv("HOME") + "/.gh-prj/auth_token"
-	return &Authenticator{StoreFile: storeFile, GetUsernameAndPassword: cb}
+	storeDir := os.Getenv("HOME") + "/.gh-prj"
+	return &Authenticator{StoreDir: storeDir, GetUsernameAndPassword: cb}
 }
 
 func (a *Authenticator) AccessToken() string {
-	token, err := ioutil.ReadFile(a.StoreFile)
+	storeFile := a.StoreDir + "/auth_token"
+	token, err := ioutil.ReadFile(storeFile)
 	if err != nil {
 		token = []byte(a.obtainAccessToken())
-		ioutil.WriteFile(a.StoreFile, token, 0600)
+		os.MkdirAll(a.StoreDir, 0700)
+
+		if err = ioutil.WriteFile(storeFile, token, 0600); err != nil {
+			log.Printf("Could not store authentication token: %s", err)
+		}
 	}
 	return string(token)
 }
