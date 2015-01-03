@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 )
 
+const clientId = "5351a4cf6969f32fe1c6"
+const clientSecret = "c3c8cf8e2c35e7c9406618a6dec0abd0d35125d8"
+
 type Client struct {
 	api *HttpApi
 }
@@ -18,10 +21,43 @@ type Repo struct {
 	HtmlUrl  string `json:"html_url"`
 }
 
-func NewClient() (*Client, error) {
+func NewClient(accessToken string) *Client {
 	return &Client{
-		&HttpApi{AccessToken()},
-	}, nil
+		&HttpApi{accessToken: &accessToken, username: nil, password: nil},
+	}
+}
+
+func NewBasicAuthClient(username, password string) *Client {
+	return &Client{
+		&HttpApi{accessToken: nil, username: &username, password: &password},
+	}
+}
+
+type AuthenticationData struct {
+	Secret string   `json:"client_secret"`
+	Scopes []string `json:"scopes"`
+	Note   string   `json:"note"`
+}
+
+type Authorization struct {
+	Token string `json:"token"`
+}
+
+func (c *Client) GetOrCreateAuthorization(scopes []string, note string) (*Authorization, error) {
+	resp, err := c.api.Put("/authorizations/clients/"+clientId,
+		&AuthenticationData{
+			Secret: clientSecret,
+			Scopes: scopes,
+			Note:   note,
+		})
+
+	if err != nil {
+		return nil, err
+	}
+
+	authorization := &Authorization{}
+	json.Unmarshal(resp.Body, authorization)
+	return authorization, err
 }
 
 func (c *Client) UserAndOrgRepos() (*[]Repo, error) {

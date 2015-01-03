@@ -12,12 +12,12 @@ type CachingClient struct {
 	Client   *Client
 }
 
-func NewCachingClient() (*CachingClient, error) {
+func NewCachingClient(accessToken string) (*CachingClient, error) {
 	cacheDir := os.Getenv("HOME") + "/.gh-prj/caches"
 
 	return &CachingClient{
 		CacheDir: cacheDir,
-		Client:   &Client{&HttpApi{AccessToken()}},
+		Client:   NewClient(accessToken),
 	}, nil
 }
 

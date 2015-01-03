@@ -1,15 +1,12 @@
 package main
 
-// cache
-// alfred-compatible output
-// selecta-compatible output
-// get token
-
 import (
 	"./formatter"
 	"./fuzz"
 	"./github"
 	"flag"
+	"fmt"
+	"github.com/howeyc/gopass"
 	"log"
 	"os"
 )
@@ -18,7 +15,16 @@ func main() {
 	expirePtr := flag.Bool("expire", false, "Expire caches")
 	flag.Parse()
 
-	c, _ := github.NewCachingClient()
+	accessToken := github.NewAuthenticator(func() (string, string, error) {
+		fmt.Printf("Username: ")
+		var username, password string
+		fmt.Scanf("%s", &username)
+		fmt.Printf("Password: ")
+		password = string(gopass.GetPasswd())
+		return username, password, nil
+	}).AccessToken()
+
+	c, _ := github.NewCachingClient(accessToken)
 
 	if *expirePtr {
 		err := c.Expire()

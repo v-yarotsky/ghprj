@@ -1,7 +1,11 @@
 package github
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -11,7 +15,9 @@ import (
 const GITHUB_API_ROOT = "https://api.github.com"
 
 type HttpApi struct {
-	accessToken string
+	accessToken *string
+	username    *string
+	password    *string
 }
 
 type Response struct {
@@ -24,11 +30,27 @@ type PaginationInfo struct {
 }
 
 func (c *HttpApi) Get(requestPath string) (*Response, error) {
-	return c.request("GET", requestPath)
+	return c.request("GET", requestPath, nil)
 }
 
-func (c *HttpApi) request(requestType string, requestPath string) (*Response, error) {
-	req, err := http.NewRequest(requestType, c.fullUrl(requestPath), nil)
+func (c *HttpApi) Put(requestPath string, body interface{}) (*Response, error) {
+	return c.request("PUT", requestPath, body)
+}
+
+func (c *HttpApi) request(requestType string, requestPath string, body interface{}) (*Response, error) {
+	var bodyJson io.Reader
+
+	if body != nil {
+		body, err := json.Marshal(&body)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to prepare request: %s", err)
+		}
+
+		bodyJson = bytes.NewBuffer(body)
+	}
+
+	req, err := http.NewRequest(requestType, c.fullUrl(requestPath), bodyJson)
 
 	if err != nil {
 		return nil, err
@@ -36,7 +58,12 @@ func (c *HttpApi) request(requestType string, requestPath string) (*Response, er
 
 	req.Header.Add("Accept", "application/vnd.github.v3+json")
 	req.Header.Add("User-Agent", "gh-prj")
-	req.Header.Add("Authorization", "token "+c.accessToken)
+
+	if c.accessToken == nil {
+		req.SetBasicAuth(*c.username, *c.password)
+	} else {
+		req.Header.Add("Authorization", "token "+*c.accessToken)
+	}
 
 	client := &http.Client{}
 
@@ -52,7 +79,7 @@ func (c *HttpApi) request(requestType string, requestPath string) (*Response, er
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return nil, err
@@ -61,7 +88,7 @@ func (c *HttpApi) request(requestType string, requestPath string) (*Response, er
 	paging := new(PaginationInfo)
 	c.populatePaging(resp, paging)
 
-	return &Response{Body: body, Paging: paging}, nil
+	return &Response{Body: responseBody, Paging: paging}, nil
 }
 
 func (c *HttpApi) fullUrl(path string) string {
