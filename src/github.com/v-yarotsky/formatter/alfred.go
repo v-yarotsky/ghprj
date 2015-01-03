@@ -12,11 +12,12 @@ type items struct {
 }
 
 type item struct {
-	Title string `xml:"title"`
-	Icon  string `xml:"icon"`
-	Uid   string `xml:"uid",attr`
-	Valid bool   `xml:"valid",attr`
-	Arg   string `xml:"arg",attr`
+	Title    string `xml:"title"`
+	Subtitle string `xml:"subtitle"`
+	Icon     string `xml:"icon"`
+	Uid      string `xml:"uid",attr`
+	Valid    bool   `xml:"valid",attr`
+	Arg      string `xml:"arg",attr`
 }
 
 func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
@@ -24,11 +25,12 @@ func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
 
 	for i, repo := range repos {
 		itemsArr[i] = item{
-			Title: repo.Name,
-			Icon:  "repo.png",
-			Uid:   repo.HtmlUrl,
-			Valid: true,
-			Arg:   repo.HtmlUrl,
+			Title:    repo.Name,
+			Subtitle: repo.FullName,
+			Icon:     "repo.png",
+			Uid:      repo.HtmlUrl,
+			Valid:    true,
+			Arg:      repo.HtmlUrl,
 		}
 	}
 

@@ -13,8 +13,9 @@ type Org struct {
 }
 
 type Repo struct {
-	Name    string `json:"name"`
-	HtmlUrl string `json:"html_url"`
+	Name     string `json:"name"`
+	FullName string `json:"full_name"`
+	HtmlUrl  string `json:"html_url"`
 }
 
 func NewClient() (*Client, error) {
