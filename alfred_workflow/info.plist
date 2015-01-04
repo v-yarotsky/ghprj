@@ -4,6 +4,8 @@
 <dict>
 	<key>bundleid</key>
 	<string>org.vyarotsky.gh-prj</string>
+	<key>category</key>
+	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>0CBF4498-3BD7-4BBC-B4FF-86172856D82E</key>
@@ -11,6 +13,17 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>32CD646B-79EC-4FD1-B9DA-7ADA39971509</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>8F88E139-F6AD-44EF-865F-AAEF8A356C19</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E9D77DEB-68E2-4607-8368-FEF8D4B2E926</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -60,7 +73,7 @@
 			<key>config</key>
 			<dict>
 				<key>argumenttype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>keyword</key>
@@ -68,7 +81,12 @@
 				<key>runningsubtext</key>
 				<string>Loading repos...</string>
 				<key>script</key>
-				<string>/usr/local/bin/gh "{query}"</string>
+				<string>./gh "{query}"
+if [ "$?" -ne 0 ]; then
+  ./notify "Failed to run Github Prj. Did you forget to login (ghlogin in alfred)?"
+fi</string>
+				<key>title</key>
+				<string>Github Prj</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -78,6 +96,28 @@
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>0CBF4498-3BD7-4BBC-B4FF-86172856D82E</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>./gh -expire
+if [ "$?" -eq 0 ]; then
+	./notify "Refresh completed!"
+else
+	./notify "Refresh failed. Did you forget to login (ghlogin in alfred)?"
+fi</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>D6FF5984-ED3F-4F15-BD0D-B9F06AE60FD6</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -106,20 +146,43 @@
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>/usr/local/bin/gh -expire</string>
+				<string>./login</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>D6FF5984-ED3F-4F15-BD0D-B9F06AE60FD6</string>
+			<string>E9D77DEB-68E2-4607-8368-FEF8D4B2E926</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>ghlogin</string>
+				<key>subtext</key>
+				<string>Github Prj</string>
+				<key>text</key>
+				<string>Login to Github</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>8F88E139-F6AD-44EF-865F-AAEF8A356C19</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>- `ghlogin` first to log in into your Github account
+- `gh &lt;part of repo name&gt;` to find a repo
+- `ghreload` to reload stale caches</string>
 	<key>uidata</key>
 	<dict>
 		<key>0CBF4498-3BD7-4BBC-B4FF-86172856D82E</key>
@@ -132,6 +195,11 @@
 			<key>ypos</key>
 			<real>180</real>
 		</dict>
+		<key>8F88E139-F6AD-44EF-865F-AAEF8A356C19</key>
+		<dict>
+			<key>ypos</key>
+			<real>420</real>
+		</dict>
 		<key>CD329F90-B6EA-4B95-897F-18D7F1ED5E8B</key>
 		<dict>
 			<key>ypos</key>
@@ -141,6 +209,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>300</real>
+		</dict>
+		<key>E9D77DEB-68E2-4607-8368-FEF8D4B2E926</key>
+		<dict>
+			<key>ypos</key>
+			<real>420</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>

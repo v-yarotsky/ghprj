@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/howeyc/gopass"
+	"golang.org/x/crypto/ssh/terminal"
 	"log"
 	"os"
 )
@@ -16,6 +17,10 @@ func main() {
 	flag.Parse()
 
 	accessToken := github.NewAuthenticator(func() (string, string, error) {
+		if !terminal.IsTerminal(int(os.Stdin.Fd())) {
+			log.Fatal("Can not ask for username/password - not an interactive terminal")
+		}
+
 		fmt.Printf("Username: ")
 		var username, password string
 		fmt.Scanf("%s", &username)

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+open -a Terminal
+
+cat <<OSA | osascript
+tell application "Terminal"
+        activate
+        do script (quoted form of ((system attribute "PWD") & "/gh"))
+end tell
+OSA
