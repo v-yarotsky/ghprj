@@ -1,8 +1,9 @@
 package formatter
 
 import (
-	"../github"
 	"bytes"
+
+	"github.com/v-yarotsky/gh-prj/github"
 )
 
 type Plain struct{}

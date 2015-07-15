@@ -1,8 +1,9 @@
 package formatter
 
 import (
-	"../github"
 	"encoding/xml"
+
+	"github.com/v-yarotsky/gh-prj/github"
 )
 
 type Alfred struct{}

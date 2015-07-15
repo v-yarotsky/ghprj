@@ -1,0 +1,17 @@
+{
+	"ImportPath": "github.com/v-yarotsky/gh-prj",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/howeyc/gopass",
+			"Rev": "2c70fa70727c953c51695f800f25d6b44abb368e"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "02a186af8b62cb007f392270669b91be5527d39c"
+		}
+	]
+}

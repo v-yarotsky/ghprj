@@ -1,15 +1,16 @@
 package main
 
 import (
-	"./formatter"
-	"./fuzz"
-	"./github"
 	"flag"
 	"fmt"
-	"github.com/howeyc/gopass"
-	"golang.org/x/crypto/ssh/terminal"
 	"log"
 	"os"
+
+	"github.com/howeyc/gopass"
+	"github.com/v-yarotsky/gh-prj/formatter"
+	"github.com/v-yarotsky/gh-prj/fuzz"
+	"github.com/v-yarotsky/gh-prj/github"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func main() {

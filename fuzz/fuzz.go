@@ -1,11 +1,12 @@
 package fuzz
 
 import (
-	"../github"
 	"errors"
 	"math"
 	"sort"
 	"strings"
+
+	"github.com/v-yarotsky/gh-prj/github"
 )
 
 func FilterRepos(repos []github.Repo, query string) []github.Repo {

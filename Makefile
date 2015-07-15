@@ -4,7 +4,7 @@ all: bin/gh alfred install
 
 bin/gh:
 	mkdir -p bin
-	go build -o bin/gh src/github.com/v-yarotsky/main.go
+	godep go build -o bin/gh ./main.go
 
 install: bin/gh
 	cp -f bin/gh $(PREFIX)/bin/gh
