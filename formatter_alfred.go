@@ -9,16 +9,19 @@ import (
 type Alfred struct{}
 
 type items struct {
-	Items []item `xml:"item"`
+	XMLName xml.Name `xml:"items"`
+	Items   []item   `xml:"item"`
 }
 
 type item struct {
-	Title    string `xml:"title"`
-	Subtitle string `xml:"subtitle"`
-	Icon     string `xml:"icon"`
-	Uid      string `xml:"uid",attr`
-	Valid    bool   `xml:"valid",attr`
-	Arg      string `xml:"arg",attr`
+	XMLName      xml.Name `xml:"item"`
+	UID          string   `xml:"uid,attr"`
+	Autocomplete string   `xml:"autocomplete,attr"`
+	Valid        bool     `xml:"valid,attr"`
+	Title        string   `xml:"title"`
+	Subtitle     string   `xml:"subtitle"`
+	Icon         string   `xml:"icon"`
+	Arg          string   `xml:"arg"`
 }
 
 func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
@@ -26,12 +29,13 @@ func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
 
 	for i, repo := range repos {
 		itemsArr[i] = item{
-			Title:    repo.Name,
-			Subtitle: repo.FullName,
-			Icon:     "repo.png",
-			Uid:      repo.HtmlUrl,
-			Valid:    true,
-			Arg:      repo.HtmlUrl,
+			Title:        repo.Name,
+			Subtitle:     repo.FullName,
+			Icon:         "repo.png",
+			UID:          repo.HtmlUrl,
+			Valid:        true,
+			Arg:          repo.HtmlUrl,
+			Autocomplete: "true",
 		}
 	}
 
