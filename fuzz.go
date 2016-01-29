@@ -1,6 +1,7 @@
 package ghprj
 
 import (
+	"bytes"
 	"errors"
 	"math"
 	"sort"
@@ -64,14 +65,16 @@ func score(choice, query string) float64 {
 		return 0.0
 	}
 
-	stringScore := float64(len(query)) / float64(matchLength) // Penalize longer matches.
-	return stringScore / float64(len(choice))                 // Normalize vs. the length of the choice, panalizing longer strings.
+	score := float64(len(query)) / float64(matchLength)
+	normalizationFactor := float64(len(query)) / float64(len(choice))
+	normalizedScore := score * normalizationFactor
+	return normalizedScore
 }
 
 func computeMatchLength(str, chars string) (int, error) {
 	runes := []rune(chars)
 	firstChar := runes[0]
-	restChars := runes[1:]
+	restChars := string(runes[1:])
 
 	firstIndexes := findCharInString(firstChar, str)
 
@@ -105,24 +108,16 @@ func findCharInString(chr rune, str string) []int {
 	return indexes
 }
 
-func findEndOfMatch(str string, chars []rune, firstIndex int) int {
+func findEndOfMatch(str, chars string, firstIndex int) int {
 	lastIndex := firstIndex
-	runes := []rune(str)
-
+	byteStr := []byte(str)
 	for _, chr := range chars {
-		index := -1
-		for i, r := range runes[(lastIndex + 1):] {
-			if chr == r {
-				index = i
-				break
-			}
-		}
-
-		if index == -1 {
+		i := bytes.IndexRune(byteStr[(lastIndex+1):], chr)
+		if i == -1 {
 			return -1
 		}
-		lastIndex = index
+		lastIndex = firstIndex + i
 	}
 
-	return lastIndex
+	return lastIndex + 1
 }
