@@ -4,7 +4,7 @@ gh-prj
 ## Summary
 
 This alfred extension helps you open github repos in your web browser with a few keystrokes.
-[Download latest](https://github.com/v-yarotsky/gh-prj/blob/master/assets/GithubPrj.alfredworkflow?raw=true)
+[Download latest](https://github.com/v-yarotsky/ghprj/releases/latest)
 
 ## Initial setup
 
