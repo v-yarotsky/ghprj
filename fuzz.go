@@ -1,4 +1,4 @@
-package fuzz
+package ghprj
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/v-yarotsky/gh-prj/github"
+	"github.com/v-yarotsky/ghprj/github"
 )
 
 func FilterRepos(repos []github.Repo, query string) []github.Repo {

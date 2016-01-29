@@ -7,9 +7,8 @@ import (
 	"os"
 
 	"github.com/howeyc/gopass"
-	"github.com/v-yarotsky/gh-prj/formatter"
-	"github.com/v-yarotsky/gh-prj/fuzz"
-	"github.com/v-yarotsky/gh-prj/github"
+	"github.com/v-yarotsky/ghprj"
+	"github.com/v-yarotsky/ghprj/github"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -23,11 +22,11 @@ func main() {
 		}
 
 		fmt.Printf("Username: ")
-		var username, password string
+		var username string
 		fmt.Scanf("%s", &username)
 		fmt.Printf("Password: ")
-		password = string(gopass.GetPasswd())
-		return username, password, nil
+		password, err := gopass.GetPasswd()
+		return username, string(password), err
 	}).AccessToken()
 
 	c, _ := github.NewCachingClient(accessToken)
@@ -46,10 +45,10 @@ func main() {
 	}
 
 	if len(flag.Args()) > 0 {
-		repos = fuzz.FilterRepos(repos, flag.Arg(0))
+		repos = ghprj.FilterRepos(repos, flag.Arg(0))
 	}
 
-	results, err := (&formatter.Alfred{}).FormattedResults(repos)
+	results, err := (&ghprj.Alfred{}).FormattedResults(repos)
 
 	if err != nil {
 		log.Fatal(err)

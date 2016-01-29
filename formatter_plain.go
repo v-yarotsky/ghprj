@@ -1,9 +1,9 @@
-package formatter
+package ghprj
 
 import (
 	"bytes"
 
-	"github.com/v-yarotsky/gh-prj/github"
+	"github.com/v-yarotsky/ghprj/github"
 )
 
 type Plain struct{}

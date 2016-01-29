@@ -1,0 +1,6 @@
+package: github.com/v-yarotsky/ghprj
+import:
+- package: github.com/howeyc/gopass
+- package: golang.org/x/crypto
+  subpackages:
+  - /ssh/terminal
