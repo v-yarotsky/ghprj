@@ -6,21 +6,22 @@ var epsilon = 0.001
 
 func TestFuzz(t *testing.T) {
 	tests := []struct {
-		choice string
-		query  string
-		score  float64
+		query   string
+		choices []string
 	}{
-		{"angular-tooltips", "api", 0.0},
-		{"r101-api", "api", 0.375},
-		{"api", "api", 1.0},
-		{"lol", "", 1.0},
-		{"r101-api", "rapi", 0.285},
+		{"api", []string{"api", "r101-api", "angular-tooltips"}},
+		{"rapi", []string{"r101-api", "api"}},
+		{"open", []string{"my-openthingy", "TokenAutoComplete"}},
 	}
 
 	for _, tt := range tests {
-		s := score(tt.choice, tt.query)
-		if s < tt.score-epsilon || s > tt.score+epsilon {
-			t.Errorf("expected score to be %f for %s and %s, got %f", tt.score, tt.choice, tt.query, s)
+		for i := 0; i < len(tt.choices)-1; i++ {
+			choice0, choice1 := tt.choices[i], tt.choices[i+1]
+			score0 := score(choice0, tt.query)
+			score1 := score(choice1, tt.query)
+			if score0 < score1 {
+				t.Errorf("expected score for choice %s (%f) to be greater than score for choice %s (%f) for query %s", choice0, score0, choice1, score1, tt.query)
+			}
 		}
 	}
 }

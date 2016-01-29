@@ -116,7 +116,7 @@ func findEndOfMatch(str, chars string, firstIndex int) int {
 		if i == -1 {
 			return -1
 		}
-		lastIndex = firstIndex + i
+		lastIndex += i
 	}
 
 	return lastIndex + 1
