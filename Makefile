@@ -1,8 +1,11 @@
-.PHONY: cmd
+.PHONY: cmd test
 
 PREFIX=/usr/local
 
-all: cmd alfred install
+all: test cmd alfred install
+
+test:
+	go test
 
 cmd:
 	mkdir -p bin
