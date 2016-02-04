@@ -42,7 +42,6 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 
 	if body != nil {
 		body, err := json.Marshal(&body)
-
 		if err != nil {
 			return nil, fmt.Errorf("Failed to prepare request: %s", err)
 		}
@@ -51,7 +50,6 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	}
 
 	req, err := http.NewRequest(requestType, c.fullUrl(requestPath), bodyJson)
-
 	if err != nil {
 		return nil, err
 	}
@@ -68,11 +66,9 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	client := &http.Client{}
 
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return nil, err
 	}
-
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
@@ -80,7 +76,6 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	}
 
 	responseBody, err := ioutil.ReadAll(resp.Body)
-
 	if err != nil {
 		return nil, err
 	}

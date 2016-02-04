@@ -26,7 +26,6 @@ type item struct {
 
 func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
 	itemsArr := make([]item, len(repos))
-
 	for i, repo := range repos {
 		itemsArr[i] = item{
 			Title:        repo.Name,
@@ -42,7 +41,6 @@ func (a *Alfred) FormattedResults(repos []github.Repo) ([]byte, error) {
 	items := &items{Items: itemsArr}
 
 	result, err := xml.MarshalIndent(items, "", "    ")
-
 	if err != nil {
 		return nil, err
 	}

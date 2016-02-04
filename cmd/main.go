@@ -39,7 +39,6 @@ func main() {
 	}
 
 	repos, err := c.UserAndOrgRepos()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +48,6 @@ func main() {
 	}
 
 	results, err := (&ghprj.Alfred{}).FormattedResults(repos)
-
 	if err != nil {
 		log.Fatal(err)
 	}

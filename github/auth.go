@@ -34,7 +34,6 @@ func (a *Authenticator) AccessToken() string {
 
 func (a *Authenticator) obtainAccessToken() string {
 	username, password, err := a.GetUsernameAndPassword()
-
 	if err != nil {
 		log.Fatalf("Failed to create authorization: %s", err)
 	}
@@ -42,7 +41,6 @@ func (a *Authenticator) obtainAccessToken() string {
 	client := NewBasicAuthClient(username, password)
 
 	authorization, err := client.GetOrCreateAuthorization([]string{"repo"}, "gh-prj")
-
 	if err != nil {
 		log.Fatalf("Failed to create authorization: %s", err)
 	}

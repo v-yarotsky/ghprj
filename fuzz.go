@@ -60,7 +60,6 @@ func score(choice, query string) float64 {
 	query = strings.ToLower(query)
 
 	matchLength, err := computeMatchLength(choice, query)
-
 	if err != nil {
 		return 0.0
 	}

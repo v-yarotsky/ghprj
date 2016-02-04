@@ -81,7 +81,7 @@
 				<key>runningsubtext</key>
 				<string>Loading repos...</string>
 				<key>script</key>
-				<string>./gh "{query}"
+                                <string>chmod +x ./gh &amp;&amp; ./gh "{query}"
 if [ "$?" -ne 0 ]; then
   ./notify "Failed to run Github Prj. Did you forget to login (ghlogin in alfred)?"
 fi</string>
