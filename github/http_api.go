@@ -14,10 +14,11 @@ import (
 
 const GITHUB_API_ROOT = "https://api.github.com"
 
+var err2FAOTPRequired = errors.New("Valid 2FA OTP is required")
+
 type HttpApi struct {
-	accessToken *string
-	username    *string
-	password    *string
+	accessToken string
+	credentials Credentials
 }
 
 type Response struct {
@@ -57,10 +58,11 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	req.Header.Add("Accept", "application/vnd.github.v3+json")
 	req.Header.Add("User-Agent", "gh-prj")
 
-	if c.accessToken == nil {
-		req.SetBasicAuth(*c.username, *c.password)
+	if c.accessToken == "" {
+		req.SetBasicAuth(c.credentials.Username, c.credentials.Password)
+		req.Header.Add("X-Github-OTP", c.credentials.TwoFactorToken)
 	} else {
-		req.Header.Add("Authorization", "token "+*c.accessToken)
+		req.Header.Add("Authorization", "token "+c.accessToken)
 	}
 
 	client := &http.Client{}
@@ -70,6 +72,10 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == 401 && strings.Contains(resp.Header.Get("X-GitHub-OTP"), "required;") {
+		return nil, err2FAOTPRequired
+	}
 
 	if resp.StatusCode != 200 {
 		return nil, errors.New(resp.Status)

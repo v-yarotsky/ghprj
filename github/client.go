@@ -19,14 +19,12 @@ type Repo struct {
 
 func NewClient(accessToken string) *Client {
 	return &Client{
-		&HttpApi{accessToken: &accessToken, username: nil, password: nil},
+		&HttpApi{accessToken: accessToken},
 	}
 }
 
-func NewBasicAuthClient(username, password string) *Client {
-	return &Client{
-		&HttpApi{accessToken: nil, username: &username, password: &password},
-	}
+func NewBasicAuthClient(c Credentials) *Client {
+	return &Client{&HttpApi{credentials: c}}
 }
 
 type AuthenticationData struct {

@@ -16,17 +16,24 @@ func main() {
 	expirePtr := flag.Bool("expire", false, "Expire caches")
 	flag.Parse()
 
-	accessToken := github.NewAuthenticator(func() (string, string, error) {
+	accessToken := github.NewAuthenticator(func(c *github.Credentials, twoFactor bool) error {
 		if !terminal.IsTerminal(int(os.Stdin.Fd())) {
-			log.Fatal("Can not ask for username/password - not an interactive terminal")
+			return fmt.Errorf("Can not ask for credentials - not an interactive terminal")
 		}
 
-		fmt.Printf("Username: ")
-		var username string
-		fmt.Scanf("%s", &username)
-		fmt.Printf("Password: ")
-		password, err := gopass.GetPasswd()
-		return username, string(password), err
+		var err error
+		if twoFactor {
+			fmt.Printf("Two-Factor OTP: ")
+			fmt.Scanf("%s", &c.TwoFactorToken)
+		} else {
+			fmt.Printf("Username: ")
+			fmt.Scanf("%s", &c.Username)
+			fmt.Printf("Password: ")
+			var password []byte
+			password, err = gopass.GetPasswd()
+			c.Password = string(password)
+		}
+		return err
 	}).AccessToken()
 
 	c, _ := github.NewCachingClient(accessToken)
