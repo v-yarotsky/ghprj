@@ -3,7 +3,6 @@ package github
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -14,7 +13,7 @@ import (
 
 const GITHUB_API_ROOT = "https://api.github.com"
 
-var err2FAOTPRequired = errors.New("Valid 2FA OTP is required")
+var err2FAOTPRequired = fmt.Errorf("Valid 2FA OTP is required")
 
 type HttpApi struct {
 	accessToken string
@@ -32,6 +31,10 @@ type PaginationInfo struct {
 
 func (c *HttpApi) Get(requestPath string) (*Response, error) {
 	return c.request("GET", requestPath, nil)
+}
+
+func (c *HttpApi) Delete(requestPath string) (*Response, error) {
+	return c.request("DELETE", requestPath, nil)
 }
 
 func (c *HttpApi) Put(requestPath string, body interface{}) (*Response, error) {
@@ -77,8 +80,8 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 		return nil, err2FAOTPRequired
 	}
 
-	if resp.StatusCode != 200 {
-		return nil, errors.New(resp.Status)
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return nil, fmt.Errorf("github API request failed: %s", resp.Status)
 	}
 
 	responseBody, err := ioutil.ReadAll(resp.Body)

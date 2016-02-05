@@ -65,5 +65,5 @@ func (a *Authenticator) mustGetCredentials(c *Credentials, twoFactor bool) {
 
 func doObtainAccessToken(c Credentials) (*Authorization, error) {
 	client := NewBasicAuthClient(c)
-	return client.GetOrCreateAuthorization([]string{"repo"}, "gh-prj")
+	return client.ForceCreateAuthorization([]string{"repo"}, "gh-prj")
 }

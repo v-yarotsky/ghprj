@@ -2,6 +2,7 @@ package github
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 const clientId = "5351a4cf6969f32fe1c6"
@@ -34,11 +35,29 @@ type AuthenticationData struct {
 }
 
 type Authorization struct {
+	ID    int    `json:"id"`
 	Token string `json:"token"`
 }
 
-func (c *Client) GetOrCreateAuthorization(scopes []string, note string) (*Authorization, error) {
-	resp, err := c.api.Put("/authorizations/clients/"+clientId,
+func (c *Client) ForceCreateAuthorization(scopes []string, note string) (*Authorization, error) {
+	authorization, err := c.doGetOrCreateOrganizations(scopes, note)
+	if err != nil {
+		return nil, err
+	}
+
+	if authorization.Token == "" {
+		_, err := c.api.Delete(fmt.Sprintf("/authorizations/%d", authorization.ID))
+		if err != nil {
+			return nil, fmt.Errorf("failed to delete lost authorization: %s", err)
+		}
+		authorization, err = c.doGetOrCreateOrganizations(scopes, note)
+	}
+
+	return authorization, err
+}
+
+func (c *Client) doGetOrCreateOrganizations(scopes []string, note string) (*Authorization, error) {
+	resp, err := c.api.Put(fmt.Sprintf("/authorizations/clients/%s", clientId),
 		&AuthenticationData{
 			Secret: clientSecret,
 			Scopes: scopes,
@@ -50,7 +69,7 @@ func (c *Client) GetOrCreateAuthorization(scopes []string, note string) (*Author
 
 	authorization := &Authorization{}
 	json.Unmarshal(resp.Body, authorization)
-	return authorization, err
+	return authorization, nil
 }
 
 func (c *Client) UserAndOrgRepos() ([]Repo, error) {
