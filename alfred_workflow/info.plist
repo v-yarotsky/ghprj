@@ -12,11 +12,35 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>32CD646B-79EC-4FD1-B9DA-7ADA39971509</string>
+				<string>AB573F8A-3DB1-458E-B7B8-7404115E5372</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>F020535F-3737-4E3E-84BC-75F569261D9B</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Pull requests</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F3C588E-D9DD-4DD6-B730-ADA6CF686D1D</string>
+				<key>modifiers</key>
+				<integer>262144</integer>
+				<key>modifiersubtext</key>
+				<string>Branches</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>0D6A14EE-3C06-42E0-B5E0-5B1537968148</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Issues</string>
 			</dict>
 		</array>
 		<key>8F88E139-F6AD-44EF-865F-AAEF8A356C19</key>
@@ -65,7 +89,26 @@
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>32CD646B-79EC-4FD1-B9DA-7ADA39971509</string>
+			<string>AB573F8A-3DB1-458E-B7B8-7404115E5372</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>open "{query}/pulls"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>F020535F-3737-4E3E-84BC-75F569261D9B</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -78,10 +121,18 @@
 				<integer>127</integer>
 				<key>keyword</key>
 				<string>gh</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>Loading repos...</string>
 				<key>script</key>
-                                <string>chmod +x ./gh &amp;&amp; ./gh "{query}"
+				<string>chmod +x ./gh &amp;&amp; ./gh "{query}"
 if [ "$?" -ne 0 ]; then
   ./notify "Failed to run Github Prj. Did you forget to login (ghlogin in alfred)?"
 fi</string>
@@ -102,6 +153,46 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>open "{query}/branches"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>6F3C588E-D9DD-4DD6-B730-ADA6CF686D1D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>open "{query}/issues"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0D6A14EE-3C06-42E0-B5E0-5B1537968148</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
@@ -143,6 +234,8 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
@@ -181,7 +274,7 @@ fi</string>
 	</array>
 	<key>readme</key>
 	<string>- `ghlogin` first to log in into your Github account
-- `gh &lt;part of repo name&gt;` to find a repo
+- `gh &lt;part of repo name&gt;` to find a repo (+ CMD for pull requests, CTRL for branches, ALT for issues)
 - `ghreload` to reload stale caches</string>
 	<key>uidata</key>
 	<dict>
@@ -190,30 +283,45 @@ fi</string>
 			<key>ypos</key>
 			<real>180</real>
 		</dict>
-		<key>32CD646B-79EC-4FD1-B9DA-7ADA39971509</key>
+		<key>0D6A14EE-3C06-42E0-B5E0-5B1537968148</key>
 		<dict>
 			<key>ypos</key>
-			<real>180</real>
+			<real>350</real>
+		</dict>
+		<key>6F3C588E-D9DD-4DD6-B730-ADA6CF686D1D</key>
+		<dict>
+			<key>ypos</key>
+			<real>240</real>
 		</dict>
 		<key>8F88E139-F6AD-44EF-865F-AAEF8A356C19</key>
 		<dict>
 			<key>ypos</key>
-			<real>420</real>
+			<real>610</real>
+		</dict>
+		<key>AB573F8A-3DB1-458E-B7B8-7404115E5372</key>
+		<dict>
+			<key>ypos</key>
+			<real>20</real>
 		</dict>
 		<key>CD329F90-B6EA-4B95-897F-18D7F1ED5E8B</key>
 		<dict>
 			<key>ypos</key>
-			<real>300</real>
+			<real>490</real>
 		</dict>
 		<key>D6FF5984-ED3F-4F15-BD0D-B9F06AE60FD6</key>
 		<dict>
 			<key>ypos</key>
-			<real>300</real>
+			<real>490</real>
 		</dict>
 		<key>E9D77DEB-68E2-4607-8368-FEF8D4B2E926</key>
 		<dict>
 			<key>ypos</key>
-			<real>420</real>
+			<real>610</real>
+		</dict>
+		<key>F020535F-3737-4E3E-84BC-75F569261D9B</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>
