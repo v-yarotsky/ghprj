@@ -17,17 +17,18 @@ type credentialsCallback func(*Credentials, bool) error
 type Authenticator struct {
 	StoreDir       string
 	GetCredentials credentialsCallback
+	Force          bool
 }
 
-func NewAuthenticator(cb credentialsCallback) *Authenticator {
-	storeDir := os.Getenv("HOME") + "/.gh-prj"
-	return &Authenticator{StoreDir: storeDir, GetCredentials: cb}
+func NewAuthenticator(cb credentialsCallback, force bool) *Authenticator {
+	storeDir := alfredGithubDir("")
+	return &Authenticator{StoreDir: storeDir, GetCredentials: cb, Force: force}
 }
 
 func (a *Authenticator) AccessToken() string {
 	storeFile := a.StoreDir + "/auth_token"
 	token, err := ioutil.ReadFile(storeFile)
-	if err != nil {
+	if err != nil || a.Force {
 		token = []byte(a.obtainAccessToken())
 		os.MkdirAll(a.StoreDir, 0700)
 
