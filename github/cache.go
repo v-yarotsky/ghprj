@@ -13,7 +13,7 @@ type CachingClient struct {
 }
 
 func NewCachingClient(accessToken string) (*CachingClient, error) {
-	cacheDir := os.Getenv("HOME") + "/.gh-prj/caches"
+	cacheDir := alfredGithubDir("caches")
 
 	return &CachingClient{
 		CacheDir: cacheDir,

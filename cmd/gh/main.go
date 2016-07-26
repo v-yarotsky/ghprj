@@ -16,8 +16,8 @@ func main() {
 	flag.Parse()
 
 	accessToken := github.NewAuthenticator(func(c *github.Credentials, twoFactor bool) error {
-		return fmt.Errorf("Not authenticated. Please run ghlogin")
-	}).AccessToken()
+		return fmt.Errorf("Not authenticated. Please log in with ghlogin")
+	}, false).AccessToken()
 
 	c, _ := github.NewCachingClient(accessToken)
 

@@ -1,23 +1,19 @@
 .PHONY: cmd test
 
-PREFIX=/usr/local
-
-all: test cmd alfred install
+all: test cmd alfred
 
 test:
 	go test
 
 cmd:
 	mkdir -p bin
-	go build -o bin/gh cmd/main.go
-
-install: cmd
-	cp -f bin/gh $(PREFIX)/bin/gh
+	go build -o bin/gh cmd/gh/main.go
+	go build -o bin/ghlogin cmd/ghlogin/main.go
 
 alfred: cmd
 	rm -rf assets
 	mkdir -p assets
-	zip -j assets/GithubPrj.alfredworkflow bin/gh alfred_workflow/*
+	zip -j assets/GithubPrj_Alfred3.alfredworkflow bin/gh bin/ghlogin alfred_workflow/*
 clean:
 	rm -f bin/*
 	rm -f assets/*
