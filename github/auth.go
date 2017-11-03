@@ -1,9 +1,11 @@
 package github
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"os/user"
 )
 
 type Credentials struct {
@@ -44,16 +46,17 @@ func (a *Authenticator) obtainAccessToken() string {
 	a.mustGetCredentials(&credentials, false)
 
 	authorization, err := doObtainAccessToken(credentials)
-	for err != nil {
-		switch err {
-		case err2FAOTPRequired:
-			a.mustGetCredentials(&credentials, true)
-			authorization, err = doObtainAccessToken(credentials)
-		case nil:
-			break
-		default:
+	switch err {
+	case err2FAOTPRequired:
+		a.mustGetCredentials(&credentials, true)
+		authorization, err = doObtainAccessToken(credentials)
+		if err != nil {
 			log.Fatalf("Failed to create authorization: %s", err)
 		}
+	case nil:
+		break
+	default:
+		log.Fatalf("Failed to create authorization: %s", err)
 	}
 	return authorization.Token
 }
@@ -66,5 +69,19 @@ func (a *Authenticator) mustGetCredentials(c *Credentials, twoFactor bool) {
 
 func doObtainAccessToken(c Credentials) (*Authorization, error) {
 	client := NewBasicAuthClient(c)
-	return client.ForceCreateAuthorization([]string{"repo"}, "gh-prj")
+	return client.ForceCreateAuthorization([]string{"repo"}, getNoteForAuthToken())
+}
+
+func getNoteForAuthToken() string {
+	user, _ := user.Current()
+	username := "<unknown>"
+	if user != nil {
+		username = user.Username
+	}
+
+	hostname, _ := os.Hostname()
+	if hostname == "" {
+		hostname = "<unknown>"
+	}
+	return fmt.Sprintf("gh-prj (%s@%s)", username, hostname)
 }

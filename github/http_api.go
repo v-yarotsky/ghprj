@@ -37,8 +37,8 @@ func (c *HttpApi) Delete(requestPath string) (*Response, error) {
 	return c.request("DELETE", requestPath, nil)
 }
 
-func (c *HttpApi) Put(requestPath string, body interface{}) (*Response, error) {
-	return c.request("PUT", requestPath, body)
+func (c *HttpApi) Post(requestPath string, body interface{}) (*Response, error) {
+	return c.request("POST", requestPath, body)
 }
 
 func (c *HttpApi) request(requestType string, requestPath string, body interface{}) (*Response, error) {
@@ -68,6 +68,7 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 		req.Header.Add("Authorization", "token "+c.accessToken)
 	}
 
+	response := &Response{}
 	client := &http.Client{}
 
 	resp, err := client.Do(req)
@@ -76,23 +77,25 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	}
 	defer resp.Body.Close()
 
+	responseBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	response.Body = responseBody
+
 	if resp.StatusCode == 401 && strings.Contains(resp.Header.Get("X-GitHub-OTP"), "required;") {
 		return nil, err2FAOTPRequired
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return nil, fmt.Errorf("github API request failed: %s", resp.Status)
-	}
-
-	responseBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
+		return response, fmt.Errorf("github API request failed: %s", resp.Status)
 	}
 
 	paging := new(PaginationInfo)
 	c.populatePaging(resp, paging)
+	response.Paging = paging
 
-	return &Response{Body: responseBody, Paging: paging}, nil
+	return response, nil
 }
 
 func (c *HttpApi) fullUrl(path string) string {
