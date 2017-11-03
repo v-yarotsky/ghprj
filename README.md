@@ -14,6 +14,8 @@ Log in into github account using the `ghlogin` keyword in alfred
 
 Just type `gh <repo name substring>` in alfred and hit Enter.
 To reload stale repository list, type `ghreload` and hit Enter.
+To open your pull requests, type `pr created`
+To open your review requests, type `pr reviews`
 
 ## License
 

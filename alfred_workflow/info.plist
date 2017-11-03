@@ -47,6 +47,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>655586D2-663B-489D-B36C-42BA1A5401A4</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3A89BFA7-3310-419B-9127-06A027F97E55</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>732F7930-18E9-46F5-A7A6-843686F91542</key>
 		<array>
 			<dict>
@@ -214,8 +227,58 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>AB573F8A-3DB1-458E-B7B8-7404115E5372</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>fixedorder</key>
+				<true/>
+				<key>items</key>
+				<string>[{"title":"Open"},{"title":"Pull Requests","arg":"pulls"},{"title":"Branches","arg":"branches"},{"title":"Issues","arg":"issues"},{"title":"My pull requests","arg":"pulls\/{var:username}"}]</string>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string></string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.listfilter</string>
+			<key>uid</key>
+			<string>8B712E59-6803-4188-8266-073B48C84A04</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -260,50 +323,6 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
-				<integer>2</integer>
-				<key>fixedorder</key>
-				<true/>
-				<key>items</key>
-				<string>[{"title":"Open"},{"title":"Pull Requests","arg":"pulls"},{"title":"Branches","arg":"branches"},{"title":"Issues","arg":"issues"},{"title":"My pull requests","arg":"pulls\/{var:username}"}]</string>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>subtext</key>
-				<string></string>
-				<key>title</key>
-				<string></string>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.listfilter</string>
-			<key>uid</key>
-			<string>8B712E59-6803-4188-8266-073B48C84A04</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>AB573F8A-3DB1-458E-B7B8-7404115E5372</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>argument</key>
 				<string>{var:repo}/{query}</string>
 				<key>variables</key>
@@ -340,21 +359,21 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<false/>
-				<key>removeextension</key>
-				<false/>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>ghreload</string>
+				<key>subtext</key>
+				<string></string>
 				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Alfred Github</string>
+				<string>Reload github repository list</string>
+				<key>withspace</key>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
+			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
-			<string>47D50FC0-D2DD-431A-BCA2-D0B19AEE5F0C</string>
+			<string>CD329F90-B6EA-4B95-897F-18D7F1ED5E8B</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -389,40 +408,42 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
-				<integer>2</integer>
-				<key>keyword</key>
-				<string>ghreload</string>
-				<key>subtext</key>
-				<string></string>
-				<key>text</key>
-				<string>Reload github repository list</string>
-				<key>withspace</key>
+				<key>lastpathcomponent</key>
 				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Alfred Github</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
+			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
-			<string>CD329F90-B6EA-4B95-897F-18D7F1ED5E8B</string>
+			<string>47D50FC0-D2DD-431A-BCA2-D0B19AEE5F0C</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>subtext</key>
-				<string></string>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
 				<key>text</key>
-				<string>Username</string>
-				<key>withspace</key>
-				<true/>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Alfred GitHub</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
+			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
-			<string>B8B6394C-1D1F-4739-B46F-AFAD640C723B</string>
+			<string>0FE22EF1-5FB2-470E-B97E-AB45F24506AF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -451,6 +472,25 @@ fi</string>
 			<key>config</key>
 			<dict>
 				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Username</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B8B6394C-1D1F-4739-B46F-AFAD640C723B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>subtext</key>
 				<string></string>
@@ -463,27 +503,6 @@ fi</string>
 			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
 			<string>065CAE1F-7D32-4FBE-ACEE-34BD17A10CF3</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<false/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Alfred GitHub</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>0FE22EF1-5FB2-470E-B97E-AB45F24506AF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -536,14 +555,14 @@ fi</string>
 				<string></string>
 				<key>variables</key>
 				<dict>
-					<key>gh_otp</key>
+					<key>gh_password</key>
 					<string>{query}</string>
 				</dict>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
-			<string>743C95F1-FB7E-4274-B11C-1D0A41DD8C86</string>
+			<string>828DE617-7187-4B76-BB33-786F001A1B88</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -572,14 +591,14 @@ fi</string>
 				<string></string>
 				<key>variables</key>
 				<dict>
-					<key>gh_password</key>
+					<key>gh_otp</key>
 					<string>{query}</string>
 				</dict>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
-			<string>828DE617-7187-4B76-BB33-786F001A1B88</string>
+			<string>743C95F1-FB7E-4274-B11C-1D0A41DD8C86</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -607,11 +626,61 @@ fi</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>https://github.com/pulls{query}</string>
+				<key>utf8</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>3A89BFA7-3310-419B-9127-06A027F97E55</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>fixedorder</key>
+				<false/>
+				<key>items</key>
+				<string>[{"title":"created","arg":"\/","subtitle":"My pull requests"},{"title":"reviews","arg":"\/review-requested"}]</string>
+				<key>keyword</key>
+				<string>pr</string>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Open github pull requests</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.listfilter</string>
+			<key>uid</key>
+			<string>655586D2-663B-489D-B36C-42BA1A5401A4</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>- `ghlogin` first to log in into your Github account
 - `gh &lt;part of repo name&gt;` to find a repo
-- `ghreload` to reload stale caches</string>
+- `ghreload` to reload stale caches
+- `pr created` to open your pull requests on github
+- `pr reviews` to open your review requests on github</string>
 	<key>uidata</key>
 	<dict>
 		<key>065CAE1F-7D32-4FBE-ACEE-34BD17A10CF3</key>
@@ -644,12 +713,29 @@ fi</string>
 			<key>ypos</key>
 			<integer>420</integer>
 		</dict>
+		<key>3A89BFA7-3310-419B-9127-06A027F97E55</key>
+		<dict>
+			<key>xpos</key>
+			<integer>170</integer>
+			<key>ypos</key>
+			<integer>580</integer>
+		</dict>
 		<key>47D50FC0-D2DD-431A-BCA2-D0B19AEE5F0C</key>
 		<dict>
 			<key>xpos</key>
 			<integer>470</integer>
 			<key>ypos</key>
 			<integer>210</integer>
+		</dict>
+		<key>655586D2-663B-489D-B36C-42BA1A5401A4</key>
+		<dict>
+			<key>note</key>
+			<string>`pr created` to open your pull requests on github
+`pr reviews` to open review requests on github</string>
+			<key>xpos</key>
+			<integer>10</integer>
+			<key>ypos</key>
+			<integer>580</integer>
 		</dict>
 		<key>732F7930-18E9-46F5-A7A6-843686F91542</key>
 		<dict>
@@ -717,7 +803,7 @@ fi</string>
 			<string>Invalidates repository cache.
 Run this after adding/removing/renaming repos on github.</string>
 			<key>xpos</key>
-			<integer>20</integer>
+			<integer>10</integer>
 			<key>ypos</key>
 			<integer>210</integer>
 		</dict>
@@ -758,7 +844,7 @@ Run this after adding/removing/renaming repos on github.</string>
 		<string></string>
 	</dict>
 	<key>version</key>
-	<string>1.0</string>
+	<string>3.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/v-yarotsky/gh-prj</string>
 </dict>
