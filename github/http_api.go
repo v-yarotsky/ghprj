@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
@@ -13,11 +12,8 @@ import (
 
 const GITHUB_API_ROOT = "https://api.github.com"
 
-var err2FAOTPRequired = fmt.Errorf("Valid 2FA OTP is required")
-
 type HttpApi struct {
 	accessToken string
-	credentials Credentials
 }
 
 type Response struct {
@@ -61,12 +57,7 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	req.Header.Add("Accept", "application/vnd.github.v3+json")
 	req.Header.Add("User-Agent", "gh-prj")
 
-	if c.accessToken == "" {
-		req.SetBasicAuth(c.credentials.Username, c.credentials.Password)
-		req.Header.Add("X-Github-OTP", c.credentials.TwoFactorToken)
-	} else {
-		req.Header.Add("Authorization", "token "+c.accessToken)
-	}
+	req.Header.Add("Authorization", "Bearer "+c.accessToken)
 
 	response := &Response{}
 	client := &http.Client{}
@@ -77,15 +68,11 @@ func (c *HttpApi) request(requestType string, requestPath string, body interface
 	}
 	defer resp.Body.Close()
 
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	response.Body = responseBody
-
-	if resp.StatusCode == 401 && strings.Contains(resp.Header.Get("X-GitHub-OTP"), "required;") {
-		return nil, err2FAOTPRequired
-	}
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return response, fmt.Errorf("github API request failed: %s", resp.Status)

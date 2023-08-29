@@ -1,40 +1,78 @@
 package github
 
 import (
+	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"os/user"
+
+	"github.com/cli/oauth/device"
+	"github.com/pkg/browser"
 )
 
-type Credentials struct {
-	Username       string
-	Password       string
-	TwoFactorToken string
+const OauthClientID = "Iv1.47ce08a23a551fc7"
+
+type accessTokenObtainer func() (accessToken string, err error)
+
+func DeviceFlowAccessTokenObtainer() (string, error) {
+	scopes := []string{"repo"}
+
+	code, err := device.RequestCode(http.DefaultClient, "https://github.com/login/device/code", OauthClientID, scopes)
+	if err != nil {
+		return "", fmt.Errorf("Error while requesting device authorization code: %w", err)
+	}
+
+	log.Printf("Enter the following code in the browser: %s", code.UserCode)
+
+	u, _ := url.Parse(code.VerificationURI)
+	q := u.Query()
+	q.Add("code", code.UserCode)
+	u.RawQuery = q.Encode()
+	log.Printf("Navigating to %s", u)
+	err = browser.OpenURL(u.String())
+	if err != nil {
+		return "", fmt.Errorf("Failed to launch browser: %w", err)
+	}
+
+	res, err := device.Wait(context.TODO(), http.DefaultClient, "https://github.com/login/oauth/access_token", device.WaitOptions{
+		ClientID:   OauthClientID,
+		DeviceCode: code,
+	})
+	if err != nil {
+		return "", fmt.Errorf("Failed to obtain access token: %w", err)
+	}
+
+	return res.Token, nil
 }
 
-type credentialsCallback func(*Credentials, bool) error
+func StaticToken(token string) func() (string, error) {
+	return func() (string, error) {
+		return token, nil
+	}
+}
 
 type Authenticator struct {
-	StoreDir       string
-	GetCredentials credentialsCallback
-	Force          bool
+	StoreDir string
+	GetToken accessTokenObtainer
+	Force    bool
 }
 
-func NewAuthenticator(cb credentialsCallback, force bool) *Authenticator {
+func NewAuthenticator(cb accessTokenObtainer, force bool) *Authenticator {
 	storeDir := alfredGithubDir("")
-	return &Authenticator{StoreDir: storeDir, GetCredentials: cb, Force: force}
+	return &Authenticator{StoreDir: storeDir, GetToken: cb, Force: force}
 }
 
 func (a *Authenticator) AccessToken() string {
 	storeFile := a.StoreDir + "/auth_token"
-	token, err := ioutil.ReadFile(storeFile)
+	token, err := os.ReadFile(storeFile)
 	if err != nil || a.Force {
 		token = []byte(a.obtainAccessToken())
 		os.MkdirAll(a.StoreDir, 0700)
 
-		if err = ioutil.WriteFile(storeFile, token, 0600); err != nil {
+		if err = os.WriteFile(storeFile, token, 0600); err != nil {
 			log.Printf("Could not store authentication token: %s", err)
 		}
 	}
@@ -42,34 +80,11 @@ func (a *Authenticator) AccessToken() string {
 }
 
 func (a *Authenticator) obtainAccessToken() string {
-	credentials := Credentials{}
-	a.mustGetCredentials(&credentials, false)
-
-	authorization, err := doObtainAccessToken(credentials)
-	switch err {
-	case err2FAOTPRequired:
-		a.mustGetCredentials(&credentials, true)
-		authorization, err = doObtainAccessToken(credentials)
-		if err != nil {
-			log.Fatalf("Failed to create authorization: %s", err)
-		}
-	case nil:
-		break
-	default:
-		log.Fatalf("Failed to create authorization: %s", err)
+	accessToken, err := a.GetToken()
+	if err != nil {
+		log.Fatalf("Could not obtain access token: %s", err)
 	}
-	return authorization.Token
-}
-
-func (a *Authenticator) mustGetCredentials(c *Credentials, twoFactor bool) {
-	if err := a.GetCredentials(c, twoFactor); err != nil {
-		log.Fatalf("Could not get credentials: %s", err)
-	}
-}
-
-func doObtainAccessToken(c Credentials) (*Authorization, error) {
-	client := NewBasicAuthClient(c)
-	return client.ForceCreateAuthorization([]string{"repo"}, getNoteForAuthToken())
+	return accessToken
 }
 
 func getNoteForAuthToken() string {

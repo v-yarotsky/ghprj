@@ -15,8 +15,8 @@ func main() {
 	flag.BoolVar(&expire, "expire", false, "Expire caches")
 	flag.Parse()
 
-	accessToken := github.NewAuthenticator(func(c *github.Credentials, twoFactor bool) error {
-		return fmt.Errorf("Not authenticated. Please log in with ghlogin")
+	accessToken := github.NewAuthenticator(func() (string, error) {
+		return "", fmt.Errorf("Not authenticated. Please log in with ghlogin")
 	}, false).AccessToken()
 
 	c, _ := github.NewCachingClient(accessToken)

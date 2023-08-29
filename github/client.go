@@ -3,7 +3,6 @@ package github
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
 )
 
 type Client struct {
@@ -22,61 +21,19 @@ func NewClient(accessToken string) *Client {
 	}
 }
 
-func NewBasicAuthClient(c Credentials) *Client {
-	return &Client{&HttpApi{credentials: c}}
-}
-
-type AuthenticationData struct {
-	Scopes []string `json:"scopes"`
-	Note   string   `json:"note"`
-}
-
-type Authorization struct {
-	ID     int      `json:"id"`
-	Token  string   `json:"token"`
-	Scopes []string `json:"scopes"`
-	Note   string   `json:"note"`
-}
-
-func (c *Client) ForceCreateAuthorization(scopes []string, note string) (*Authorization, error) {
-	err := c.findAndDeleteExistingAuthorization(scopes, note)
+func (c *Client) GetLogin() (string, error) {
+	res, err := c.api.Get("/user")
 	if err != nil {
-		return nil, err
+		return "", fmt.Errorf("Failed to get authenticated user: %w", err)
 	}
-
-	resp, err := c.api.Post("/authorizations", &AuthenticationData{
-		Scopes: scopes,
-		Note:   note,
-	})
+	var me struct {
+		Login string `json:"login"`
+	}
+	err = json.Unmarshal(res.Body, &me)
 	if err != nil {
-		return nil, err
+		return "", fmt.Errorf("Failed to unmarshal get current user response: %w", err)
 	}
-
-	authorization := &Authorization{}
-	err = json.Unmarshal(resp.Body, authorization)
-	if err != nil {
-		return nil, err
-	}
-	return authorization, nil
-}
-
-func (c *Client) findAndDeleteExistingAuthorization(scopes []string, note string) error {
-	resp, err := c.api.Get("/authorizations")
-	if err != nil {
-		return err
-	}
-	authorizations := []Authorization{}
-	err = json.Unmarshal(resp.Body, &authorizations)
-	if err != nil {
-		return err
-	}
-	for _, a := range authorizations {
-		if reflect.DeepEqual(a.Scopes, scopes) && a.Note == note {
-			_, err := c.api.Delete(fmt.Sprintf("/authorizations/%d", a.ID))
-			return err
-		}
-	}
-	return nil
+	return me.Login, nil
 }
 
 func (c *Client) UserAndOrgRepos() ([]Repo, error) {
