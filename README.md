@@ -17,7 +17,3 @@ To reload stale repository list, type `ghreload` and hit Enter.
 To open your pull requests, type `pr created`
 To open your review requests, type `pr reviews`
 
-## License
-
-[WTFPL](https://github.com/v-yarotsky/gh-prj/blob/master/LICENSE.txt?raw=true)
-
